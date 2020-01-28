@@ -6,7 +6,7 @@ function ShoutBox() {
     backgroundColor: '#8EE4AF',
     border: '2px solid #000000',
     height: '70vh',
-    width: '20vw',
+    width: '90vw',
 
     display: 'flex',
     flexDirection: 'row',

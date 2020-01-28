@@ -6,28 +6,20 @@ function CategoryPanel() {
   const styles = {
     backgroundColor: '#8EE4AF',
     border: '2px solid #000000',
-    height: '70vh',
-    width: '75vw',
-    display: 'flex'
-  };
-
-  const columnStyles = {
-    border: '2px solid #000000',
+    height: '200vh',
+    width: '90vw',
     display: 'flex',
-    flex: 1,
     flexDirection: 'column',
-    justifyContent: "center",
-    alignItems: 'center',
-    alignContent: 'center',
+    alignItems: "center",
+    marginBottom: "50px",
+    marginTop: "50px"
   };
 
   return (
     <div style={styles}>
-      <div style={columnStyles}>
         <Category/>
         <Category/>
         <Category/>
-      </div>
     </div>
   );
 }
