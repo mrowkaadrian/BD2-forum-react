@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {List, Header, Icon, Button} from "semantic-ui-react";
 import AddPostForm from "./AddPostForm";
+import ThreadViewer from "./ThreadViewer";
 
 
 function Category({categoryId, categoryName, matchingThreads}) {
@@ -36,7 +37,7 @@ function Category({categoryId, categoryName, matchingThreads}) {
             <CategoryHeader categoryName={categoryName} />
             <CategoryBody threads={matchingThreads} posts={posts}/>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <AddPostForm />
+                <AddPostForm categoryId={categoryId}/>
             </div>
         </div>
     )
@@ -61,16 +62,21 @@ function CategoryBody({threads, posts}) {
 
     if (threads != null) {
         for (const [index, value] of threads.entries()) {
-            const postToAdd = getOnlyMatchingPost(value?.id, posts);
+            const postsToAdd = getOnlyMatchingPost(value?.id, posts);
+            let post;
+            if (postsToAdd != null)
+                post = postsToAdd[0];
+            else
+                post = null;
 
             itemsToRender.push(
                 <List.Item key={index}>
                     <List.Content floated='right'>
-                        <Button>See this post</Button>
+                        <ThreadViewer thread={value} posts={postsToAdd}/>
                     </List.Content>
                     <List.Content>
                         <List.Header>{value?.topic}</List.Header>
-                        {postToAdd?.body}
+                        {post?.body}
                     </List.Content>
                 </List.Item>
             )
@@ -86,16 +92,16 @@ function CategoryBody({threads, posts}) {
 
 function getOnlyMatchingPost(threadId, posts) {
     if (posts != null){
-        let matchingPost = {};
+        const matchingPosts = [];
 
         for (let i = 0; i < posts.length; i++) {
             let post = posts[i];
 
             if (post?.thread?.threadId === threadId)
-                matchingPost = post;
+                matchingPosts.push(post);
         }
 
-        return matchingPost;
+        return matchingPosts;
     }
     else
         return null;
