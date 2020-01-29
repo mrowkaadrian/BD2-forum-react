@@ -3,20 +3,72 @@ import React from 'react';
 import Header from "./components/Header";
 import MainPage from "./components/MainPage";
 
+export const AuthContext = React.createContext();
+
+const initialState = {
+    isAuthenticated: false,
+    user: null,
+    token: null,
+};
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case "LOGIN":
+            localStorage.setItem("user", JSON.stringify(action.payload.user));
+            localStorage.setItem("token", JSON.stringify(action.payload.token));
+            return {
+                ...state,
+                isAuthenticated: true,
+                user: action.payload.user,
+                token: action.payload.token
+            };
+        case "LOGOUT":
+            localStorage.clear();
+            return {
+                ...state,
+                isAuthenticated: false,
+                user: null
+            };
+        default:
+            return state;
+    }
+};
+
+const testState = {
+    isAuthenticated: false,
+    user: "Adrian",
+    token: "test_token",
+};
+
 function App() {
-    const styles = {
-        alignSelf: 'stretch'
-    };
+    const [state, dispatch] = React.useReducer(reducer, initialState);
 
     return (
-        <div style={styles}>
-            <Header/>
-            <MainPage/>
-        </div>
+        <AuthContext.Provider value={{state, dispatch}}>
+            <div style={{alignSelf: 'stretch'}}>
+                <Header state={testState} />
+                <MainPage />
+            </div>
+        </AuthContext.Provider>
+        /*
+        <AuthContext.Provider value={{state, dispatch}}>
+            <Header2 />
+            <div>
+                {!state.isAuthenticated ? <Login2 /> : <Home2 />}
+            </div>
+        </AuthContext.Provider>
+         */
     );
 }
 
 export default App
+
+// previous app return:
+//                <div style={{alignSelf: 'stretch'}}>
+//                     <Header/>
+//                     <MainPage/>
+//                 </div>
+
 
 // COLORS:
 //

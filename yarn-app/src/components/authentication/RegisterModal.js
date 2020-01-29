@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Button, Form, Grid, Header, Icon, Modal, Segment} from 'semantic-ui-react'
+import {Button, Form, Grid, Header, Icon, Modal, Segment, Divider} from 'semantic-ui-react'
 
 export default class LoginModal extends Component {
     state = { modalOpen: false };
@@ -42,6 +42,10 @@ export default class LoginModal extends Component {
 
                                 <Button color='teal' fluid size='large' onClick={this.handleClose}>
                                     Register
+                                </Button>
+                                <Divider />
+                                <Button color='teal' fluid size='large' onClick={this.handleClose}>
+                                    Go back
                                 </Button>
                             </Segment>
                         </Form>

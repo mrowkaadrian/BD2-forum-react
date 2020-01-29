@@ -1,26 +1,65 @@
 import React from "react";
+import {List, Header, Icon, Button} from "semantic-ui-react";
+import AddPostForm from "./AddPostForm";
 
-function Category() {
+function Category({categoryId, categoryName, matchingThreads}) {
 
     const styles = {
         backgroundColor: "#EDF5E1",
-        width: '50vw',
-        height: '50vh',
+        width: '87vw',
+        height: '35vh',
         border: '2px solid #000000',
 
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        alignContent: 'center',
-        justifyContent: 'center',
-        margin: '50px'
+        marginTop: '25px'
     };
 
     return (
         <div style={styles}>
-            Some Category
+            <CategoryHeader categoryName={categoryName} />
+            <CategoryBody threads={matchingThreads}/>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <AddPostForm />
+            </div>
         </div>
     )
 }
 
 export default Category
+
+function CategoryHeader({categoryName}) {
+    return (
+        <div>
+            <Header as='h2' icon textAlign='center' color="grey">
+                <Icon name='folder' />
+                <Header.Content>Category: {categoryName}</Header.Content>
+            </Header>
+        </div>
+    )
+}
+
+function CategoryBody({threads}) {
+
+    const itemsToRender = [];
+
+    if (threads != null) {
+        for (const [index, value] of threads.entries()) {
+            itemsToRender.push(
+                <List.Item key={index}>
+                    <List.Content floated='right'>
+                        <Button>See this post</Button>
+                    </List.Content>
+                    <List.Content>
+                        <List.Header>{value?.topic}</List.Header>
+                        Some shortened content of the thread
+                    </List.Content>
+                </List.Item>
+            )
+        }
+    }
+
+    return <React.Fragment>
+        <List celled>
+            {itemsToRender}
+        </List>
+    </React.Fragment>
+}
