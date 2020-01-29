@@ -14,26 +14,10 @@ function Category({categoryId, categoryName, matchingThreads}) {
         marginTop: '25px'
     };
 
-    const [threads, setThreads] = useState(null);
     const [posts, setPosts] = useState(null);
     const [loading, setLoading] = useState(null);
 
-    const GET_ALL_THREADS_URL = '/forum/api/thread/all';
     const GET_ALL_POSTS_URL = '/forum/api/post/all';
-
-    getOnlyMatchingThreads(categoryId, threads);
-
-    useEffect(() => {
-        fetch(GET_ALL_THREADS_URL)
-            .then(res => {
-                setLoading(true);
-                return res.json();
-            })
-            .then(json => {
-                setThreads(json);
-                setLoading(false);
-            })
-    }, [GET_ALL_THREADS_URL]);
 
     useEffect(() => {
         fetch(GET_ALL_POSTS_URL)
@@ -78,7 +62,6 @@ function CategoryBody({threads, posts}) {
     if (threads != null) {
         for (const [index, value] of threads.entries()) {
             const postToAdd = getOnlyMatchingPost(value?.id, posts);
-            console.log(postToAdd);
 
             itemsToRender.push(
                 <List.Item key={index}>
@@ -101,32 +84,12 @@ function CategoryBody({threads, posts}) {
     </React.Fragment>
 }
 
-function getOnlyMatchingThreads(categoryId, allThreads) {
-    if (allThreads != null) {
-        const matchingThreads = [];
-
-        for (let i = 0; i < allThreads.length; i++) {
-            let thread = allThreads[i];
-
-            if (thread?.category?.categoryId === categoryId)
-                matchingThreads.push(thread);
-        }
-
-        return matchingThreads;
-    }
-    else
-        return null;
-}
-
 function getOnlyMatchingPost(threadId, posts) {
     if (posts != null){
         let matchingPost = {};
 
         for (let i = 0; i < posts.length; i++) {
             let post = posts[i];
-
-            //console.log(JSON.stringify(post?.thread?.threadId));
-            //console.log(JSON.stringify(threadId));
 
             if (post?.thread?.threadId === threadId)
                 matchingPost = post;
