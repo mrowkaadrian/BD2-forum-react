@@ -50,25 +50,10 @@ function App() {
                 <MainPage />
             </div>
         </AuthContext.Provider>
-        /*
-        <AuthContext.Provider value={{state, dispatch}}>
-            <Header2 />
-            <div>
-                {!state.isAuthenticated ? <Login2 /> : <Home2 />}
-            </div>
-        </AuthContext.Provider>
-         */
     );
 }
 
 export default App
-
-// previous app return:
-//                <div style={{alignSelf: 'stretch'}}>
-//                     <Header/>
-//                     <MainPage/>
-//                 </div>
-
 
 // COLORS:
 //

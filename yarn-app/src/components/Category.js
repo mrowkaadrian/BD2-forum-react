@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {List, Header, Icon, Button} from "semantic-ui-react";
 import AddPostForm from "./AddPostForm";
+
 
 function Category({categoryId, categoryName, matchingThreads}) {
 
@@ -13,10 +14,43 @@ function Category({categoryId, categoryName, matchingThreads}) {
         marginTop: '25px'
     };
 
+    const [threads, setThreads] = useState(null);
+    const [posts, setPosts] = useState(null);
+    const [loading, setLoading] = useState(null);
+
+    const GET_ALL_THREADS_URL = '/forum/api/thread/all';
+    const GET_ALL_POSTS_URL = '/forum/api/post/all';
+
+    getOnlyMatchingThreads(categoryId, threads);
+
+    useEffect(() => {
+        fetch(GET_ALL_THREADS_URL)
+            .then(res => {
+                setLoading(true);
+                return res.json();
+            })
+            .then(json => {
+                setThreads(json);
+                setLoading(false);
+            })
+    }, [GET_ALL_THREADS_URL]);
+
+    useEffect(() => {
+        fetch(GET_ALL_POSTS_URL)
+            .then(res => {
+                setLoading(true);
+                return res.json();
+            })
+            .then(json => {
+                setPosts(json);
+                setLoading(false);
+            })
+    }, [GET_ALL_POSTS_URL]);
+
     return (
         <div style={styles}>
             <CategoryHeader categoryName={categoryName} />
-            <CategoryBody threads={matchingThreads}/>
+            <CategoryBody threads={matchingThreads} posts={posts}/>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                 <AddPostForm />
             </div>
@@ -37,12 +71,15 @@ function CategoryHeader({categoryName}) {
     )
 }
 
-function CategoryBody({threads}) {
+function CategoryBody({threads, posts}) {
 
     const itemsToRender = [];
 
     if (threads != null) {
         for (const [index, value] of threads.entries()) {
+            const postToAdd = getOnlyMatchingPost(value?.id, posts);
+            console.log(postToAdd);
+
             itemsToRender.push(
                 <List.Item key={index}>
                     <List.Content floated='right'>
@@ -50,7 +87,7 @@ function CategoryBody({threads}) {
                     </List.Content>
                     <List.Content>
                         <List.Header>{value?.topic}</List.Header>
-                        Some shortened content of the thread
+                        {postToAdd?.body}
                     </List.Content>
                 </List.Item>
             )
@@ -62,4 +99,41 @@ function CategoryBody({threads}) {
             {itemsToRender}
         </List>
     </React.Fragment>
+}
+
+function getOnlyMatchingThreads(categoryId, allThreads) {
+    if (allThreads != null) {
+        const matchingThreads = [];
+
+        for (let i = 0; i < allThreads.length; i++) {
+            let thread = allThreads[i];
+
+            if (thread?.category?.categoryId === categoryId)
+                matchingThreads.push(thread);
+        }
+
+        return matchingThreads;
+    }
+    else
+        return null;
+}
+
+function getOnlyMatchingPost(threadId, posts) {
+    if (posts != null){
+        let matchingPost = {};
+
+        for (let i = 0; i < posts.length; i++) {
+            let post = posts[i];
+
+            //console.log(JSON.stringify(post?.thread?.threadId));
+            //console.log(JSON.stringify(threadId));
+
+            if (post?.thread?.threadId === threadId)
+                matchingPost = post;
+        }
+
+        return matchingPost;
+    }
+    else
+        return null;
 }
